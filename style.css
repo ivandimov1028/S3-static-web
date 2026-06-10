@@ -1,0 +1,114 @@
+/* GLOBAL RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* BACKGROUND IMAGE (from S3 or CloudFront) */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  color: #eaf2ff;
+
+  background-image: url("Images/Cloud landscape.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* DARK OVERLAY FOR READABILITY */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 30, 0.55);
+  z-index: -1;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 50px 20px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* SECTIONS */
+.section {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 25px;
+}
+
+/* TEXT STYLING */
+h2 {
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+p {
+  color: #d7e3f4;
+  line-height: 1.6;
+}
+
+/* PROJECT TABLE CONTAINER */
+.table-container {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+
+  border-radius: 12px;
+  padding: 15px;
+  overflow-x: auto;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #eaf2ff;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+th {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* LINKS */
+a {
+  color: #7dd3fc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* FOOTER (always bottom) */
+.footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.4);
+}
+
+/* FADE IN ANIMATION */
+.fade-in {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

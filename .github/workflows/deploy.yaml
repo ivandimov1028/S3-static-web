@@ -24,7 +24,10 @@ jobs:
           aws-region: eu-central-1
 
       - name: Sync to S3
-        run: aws s3 sync . s3://staticweb-bucket-ivan  --delete
+        run: aws s3 sync . s3://staticweb-bucket-ivan  --delete 
+                --exclude ".git/*" \
+                --exclude ".github/*" \
+                --exclude "*.md"
 
       - name: Invalidate CloudFront
         if: false

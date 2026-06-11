@@ -27,6 +27,7 @@ jobs:
         run: aws s3 sync . s3://staticweb-bucket-ivan  --delete
 
       - name: Invalidate CloudFront
+        if: false
         run: |
           aws cloudfront create-invalidation \
             --distribution-id YOUR_DISTRIBUTION_ID \

@@ -24,7 +24,7 @@ jobs:
           aws-region: eu-central-1
 
       - name: Sync to S3
-        run: aws s3 sync dist/ s3://staticweb-bucket-ivan  --delete 
+        run: aws s3 sync dist/ s3://static-website-ivanops  --delete 
 
 
       - name: Invalidate CloudFront

@@ -20,17 +20,17 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::997498697952:role/GitHub-StaticWebsiteS3-OIDC-role
+          role-to-assume: ${{ secrets.OIDC_Role }}
           aws-region: eu-central-1
 
       - name: Sync to S3
-        run: aws s3 sync dist/ s3://staticweb-bucket-ivan  --delete 
+        run: aws s3 sync dist/ s3://static-website-ivanops  --delete 
 
 
       - name: Invalidate CloudFront
-        if: false
+        
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id YOUR_DISTRIBUTION_ID \
+            --distribution-id ${{ secrets.CloudFront_Distribution_ID }} \
             --paths "/*"
             

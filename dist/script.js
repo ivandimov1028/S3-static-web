@@ -31,58 +31,35 @@ rows.forEach(row => {
   });
 });
 
-// UNIQUE VISITOR COUNTER
-// Requires a backend endpoint that increments the count only when a browser
-// has not already been marked with the visit cookie.
-const VISITOR_COUNTER_API = "/api/visitors";
-const VISITOR_COOKIE_NAME = "cloud_portfolio_visited";
-const VISITOR_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-function setCookie(name, value, maxAgeSeconds) {
-  const secure = window.location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax${secure}`;
-}
+// Counter for visitors (fetch from serverless function)
+// The API must return JSON with a numeric count field.
+const VISITOR_COUNTER_URL = "https://g099cr2o2f.execute-api.us-east-1.amazonaws.com/visit";
 
 async function updateVisitorCounter() {
-  const counterElement = document.getElementById("visitorCounter");
-  if (!counterElement) return;
-
-  const alreadyCounted = getCookie(VISITOR_COOKIE_NAME) === "1";
+  const el = document.getElementById("visitorCounter");
+  if (!el) return;
 
   try {
-    const response = await fetch(VISITOR_COUNTER_API, {
-      method: alreadyCounted ? "GET" : "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: alreadyCounted ? undefined : JSON.stringify({
-        page: window.location.pathname,
-        referrer: document.referrer || null
-      })
+    const res = await fetch(VISITOR_COUNTER_URL, {
+      cache: "no-store" // prevent caching
     });
 
-    if (!response.ok) {
-      throw new Error(`Counter request failed with status ${response.status}`);
+    if (!res.ok) {
+      throw new Error(`Visitor API responded with ${res.status}`);
     }
 
-    const data = await response.json();
-    const count = data.uniqueVisitors ?? data.count ?? data.value;
+    const data = await res.json();
+    const count = Number(data.count ?? data.visitors ?? data.value ?? data.total);
 
-    if (!alreadyCounted) {
-      setCookie(VISITOR_COOKIE_NAME, "1", VISITOR_COOKIE_MAX_AGE);
+    if (!Number.isFinite(count)) {
+      throw new Error("Visitor API did not return a numeric count");
     }
 
-    counterElement.textContent = typeof count === "number"
-      ? `Unique visitors: ${count.toLocaleString()}`
-      : "Unique visitors: unavailable";
-  } catch (error) {
-    counterElement.textContent = "Unique visitors: unavailable";
-    console.warn("Visitor counter could not be loaded.", error);
+    el.textContent = `Visitors: ${count.toLocaleString()}`;
+  } catch (e) {
+    el.textContent = "Visitors: unavailable";
+    console.warn("Visitor counter could not be loaded.", e);
   }
 }
 
